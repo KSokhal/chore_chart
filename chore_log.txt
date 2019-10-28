@@ -1,0 +1,3 @@
+Penguins,Bogdan,washup,0,cook,0
+Penguins,Xiang,washup,10,cook,10
+Penguins,Asim,washup,1,cook,10
