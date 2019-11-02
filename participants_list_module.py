@@ -1,26 +1,26 @@
 class Participants():
  
-    ## Constants used for validation
+    # Constants used for validation
     MINIMUM_NAME_LENGTH = 3     # Used to validate team member's name
     MAXIMUM_NAME_LENGTH = 10
     
     MINIMUM_HOUSEHOLD_SIZE = 2
     MAXIMUM_HOUSEHOLD_SIZE = 5
 
-    ## Constructor for the set containing participant's names.
+    # Constructor for the set containing participant's names.
     # @param the_participants a set containing the names
     #              
     def __init__(self, the_participants) :
         self.participants = the_participants
 
-    ## Return the participants' list.
+    # Return the participants' list.
     #          
     @property
     def participants(self):
         return self._participants
 
 
-    ## Sets the participants' list attribute.
+    # Sets the participants' list attribute.
     #  @param name the participants set
     #  @exception ValueError raised if:
     #           - any of the names in the list are invalid
@@ -47,7 +47,7 @@ class Participants():
         return participants_string
 
 
-    ## Check the set of participants.
+    # Check the set of participants.
     # Verifies that the set of partcipants is a valid length.
     # Verifies that each participants is valid.
     # 
@@ -69,7 +69,7 @@ class Participants():
         return True
 
 
-    ## Check the name contains only alphanumeric characters and check
+    # Check the name contains only alphanumeric characters and check
     #  that it is the right length.
     # 
     # @param name the string to be validated
@@ -85,7 +85,7 @@ class Participants():
             raise ValueError(("The name must only contain letters and "+
                              "must have a length more than {} and less than {}.").format
                              (Participants.MINIMUM_NAME_LENGTH,Participants.MAXIMUM_NAME_LENGTH))
-    ## Check the number of participants in the set is the right length.
+    # Check the number of participants in the set is the right length.
     # 
     # @return True if valid and generate an exception if not.
     #           
@@ -104,7 +104,7 @@ class Participants():
 
 
 
-## main method
+# main method
 #
 # Contains some simple tests
 #
