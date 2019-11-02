@@ -44,18 +44,27 @@ def about():
 #
 #
 def create_household(all_households):
+    # Get new household name
     new_household_name = get_household_name()
+    # Check if the household already exists
     household_obj = household_exists(new_household_name, all_households)
+    # Returns None if does not already exist
     if household_obj is None:
+        # Get participants names
         members_set = get_participants_names()
+        # Get chores
         chores_set = get_chores()
+        # Create new household using participants and chores
         household_obj = Household(new_household_name, members_set, chores_set)
+        # Add created household to list of current households
         all_households.append(household_obj)
+        # Print out all entered information
         print("\n\tHousehold entered:\n")
         print("\t\tHousehold Name: ", getattr(household_obj, "household_name"))
         print("\t\tParticipants: ", getattr(household_obj, "participants"))
         print("\t\tChores (Frequency): ", getattr(household_obj, "chores"))
     else:
+        # If household already exists, alert user
         print("Household {} already exists, returning to the menu."
               .format(new_household_name))
     return 
@@ -128,13 +137,17 @@ def get_participants_names():
     name = "AAA"    # dummy value so that we can start the while loop
     number_of_people = 1
     while name != "":
+        # Get a name
         name = get_person_name(number_of_people)
+        # If name is not blank
         if name == "":
             try:
+                # Check if name is of valid length
                 Participants.is_valid_length(household_names)
             except ValueError as err:
                 print(err)
                 name = "AAA"
+        # If name is blank, add names to household_names
         else:
             current_length = len(household_names)
             household_names.add(name)
@@ -171,7 +184,7 @@ def get_person_name(participant_number):
     return person_name
 
 
-##  Gets the chores.
+#  Gets the chores.
 #
 #   Invariants: duplicate chore names are not allowed,
 #               names must consist of words which are alphanumeric characters,
@@ -189,18 +202,24 @@ def get_chores():
     number_of_chores = 0
 
     while new_chore != "":
+        # Get names of chore
         new_chore = get_chore(number_of_chores + 1)
         if new_chore == "":
             try:
+                # Check if the number of chores is valid
                 ChoresList.is_valid_length(chores_list)
             except ValueError as err:
                 print(err)
                 new_chore = "AAA"
         else:
             try:
+                # Check if new chore has already be set
                 ChoresList.is_unique(new_chore, chores_list)
+                # Get the frequency the chore needs to be completed
                 chore_frequency = get_chore_frequency()
+                # Create a chore object using the name a frequency
                 chore_obj = Chore(new_chore, chore_frequency)
+                # Add to list of chores
                 chores_list.add(chore_obj)
                 number_of_chores = number_of_chores + 1
             except ValueError as err:
@@ -378,7 +397,7 @@ def get_option():
     return option.upper()
 
 
-## Checks if any household exists and returns a boolean
+# Checks if any household exists and returns a boolean
 # @param all_households, a list of household objects
 # @return boolean, True if no households, False if any households
 #
@@ -392,7 +411,7 @@ def check_empty_household(all_households):
         return False
 
 
-## Reads a file line by line and returns it as a list
+# Reads a file line by line and returns it as a list
 # @param file_name, the name of the file including file extension
 # @return lines, a list containing the content of the file line by line, and split by comma
 #
@@ -416,7 +435,7 @@ def read_file(file_name):
     return lines
 
 
-## Writes a list to a file line by line
+# Writes a list to a file line by line
 # @param file_name, the name of the file including file extension
 # @param lines, a list containing the content to be written to the file, line by line
 #
@@ -438,7 +457,7 @@ def write_to_file(file_name, lines):
     file.close()
 
 
-## Reads the households file and sorts the data from it
+# Reads the households file and sorts the data from it
 # @param all_households, a list of household objects
 #
 def read_households(all_households):
@@ -464,8 +483,8 @@ def read_households(all_households):
         # Tries to get the participants and if it can not be found, gives an error and skips the whole line
         try:
             number_of_participants = int(line[1])
-            particpants_offset = number_of_participants + 2
-            particpants = line[2:particpants_offset]
+            participants_offset = number_of_participants + 2
+            participants = line[2:participants_offset]
         except (IndexError, ValueError):
             print(error_msg)
             print(
@@ -473,8 +492,8 @@ def read_households(all_households):
             continue
         # Tries to get the chores and if it can not be found, gives an error and skips the whole line
         try:
-            number_of_chores = int(line[particpants_offset])
-            chores_offest = particpants_offset + 1
+            number_of_chores = int(line[participants_offset])
+            chores_offest = participants_offset + 1
             chores = line[chores_offest:chores_offest + (2 * number_of_chores)]
         except (IndexError, ValueError):
             print(error_msg)
@@ -495,11 +514,11 @@ def read_households(all_households):
         # Checks if the participants names' and number of participants are valid and adds them to the respective list
         # If not valid, gives an error and skips the whole line
         try:
-            Participants.is_valid_length(particpants)
-            for name in particpants:
+            Participants.is_valid_length(participants)
+            for name in participants:
                 Participants.is_valid_name(name)
-            particpants_set = set(particpants)
-            if len(particpants) != len(particpants_set):
+            particpants_set = set(participants)
+            if len(participants) != len(particpants_set):
                 raise ValueError(
                     "There are multiple participants with the same.")
         except (TypeError, ValueError) as err:
@@ -523,25 +542,24 @@ def read_households(all_households):
             print(error_msg, err)
             continue
         all_household_names.append(household_name)
-        all_participants.append(particpants)
+        all_participants.append(participants)
         all_chores.append(chores)
     # Creates objects for all the valid households
-    add_households(all_households, all_household_names, all_participants,
-                   all_chores)
+    add_households(all_households, all_household_names, all_participants, all_chores)
     return
 
 
-## Creates ojbects for all he valid households from teh file
-# @param all_households, a list of household objects
-# @param household_names, a list of all valid household names from file
-# @param particpants, a list of all valid participants from file
-# @param chores, a list of all valid chores and frequcnise from file
+# Creates objects for all he valid households from teh file
+#   @param all_households, a list of household objects
+#   @param household_names, a list of all valid household names from file
+#   @param participants, a list of all valid participants from file
+#   @param chores, a list of all valid chores and frequencies from file
 #
-def add_households(all_households, household_names, particpants, chores):
+def add_households(all_households, household_names, participants, chores):
     # For each household from the file, create the relevant objects for the household
     for household in range(len(household_names)):
         new_household_name = household_names[household]
-        members_set = set(particpants[household])
+        members_set = set(participants[household])
         chores_set = set()
         for i in range(len(chores[household])):
             if i % 2 == 0:
@@ -553,7 +571,7 @@ def add_households(all_households, household_names, particpants, chores):
     return
 
 
-## Formats the household objects for writing to a file
+# Formats the household objects for writing to a file
 # @param all_households, a list of household objects
 #
 def write_households(all_households):
@@ -588,7 +606,7 @@ def write_households(all_households):
     return
 
 
-## Reads the chore_log from a file and updates the chore log from it
+# Reads the chore_log from a file and updates the chore log from it
 # @param all_households, a list of household objects
 #
 def read_chore_log(all_households):
@@ -620,17 +638,13 @@ def read_chore_log(all_households):
                 for i in range(2, len(line), 2):
                     # If the first of the pair is not a current chore, print an error and skip the line
                     if line[i] not in chores:
-                        raise ValueError(
-                            "The chores should be current chores.")
+                        raise ValueError("The chores should be current chores.")
                     # If the second of the pair is not a digit, print an error and skip the line
-                    elif line[i + 1].isdigit() == False:
-                        raise ValueError(
-                            "The number completed should be a digit")
+                    elif line[i + 1].isdigit() is False:
+                        raise ValueError("The number completed should be a digit")
                     # If the second of the pair larger than the maximum number allowed, an error and skip the line
                     elif int(line[i + 1]) > Household.MAXIMUM_CHORES_DONE:
-                        raise ValueError(
-                            "The number completed must be under {}".format(
-                                MAX_NUMBER_COMPLETED))
+                        raise ValueError("The number completed must be under {}".format(Household.MAXIMUM_CHORES_DONE))
                     # If all checks are passed, update the household
                     else:
                         household_obj.update_log(line[1], line[i], line[i + 1])
@@ -644,7 +658,7 @@ def read_chore_log(all_households):
     return
 
 
-## Formats the chore_log attribute for writing to a file
+# Formats the chore_log attribute for writing to a file
 # @param all_households, a list of household objects
 #
 def write_chore_log(all_households):
@@ -669,7 +683,7 @@ def write_chore_log(all_households):
     return
 
 
-## The menu is displayed until the user quits
+# The menu is displayed until the user quits
 # 
 def main():
     all_households = []   
@@ -685,23 +699,20 @@ def main():
             create_household(all_households)
         elif option == 'V':
             # Only continues if household isn’t empty
-            if check_empty_household(all_households) == False:
+            if check_empty_household(all_households) is False:
                 view_household(all_households)
         elif option == 'L':
             # Only continues if household isn’t empty
-            if check_empty_household(all_households) == False:
+            if check_empty_household(all_households) is False:
                 log_chores(all_households)
         elif option == 'S':
             # Only continues if household isn’t empty
-            if check_empty_household(all_households) == False:
+            if check_empty_household(all_households) is False:
                 show_leaderboard(all_households)
     # Writes the household and chore log data to the respective files
     write_households(all_households)
     write_chore_log(all_households)
     print("\n\nBye, bye.")
-
-
-
 
 
 # Start the program
